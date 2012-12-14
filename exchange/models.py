@@ -3,12 +3,17 @@ from django.contrib import admin
 from django.contrib.auth.models import User, Permission
 from django.core.exceptions import ValidationError
 
+
+def validate_two(value):
+    if len(value) != 2:
+        raise ValidationError(u'field should have two values, has {} instead'.format(len(value))
+
+
 class HookrUser(User):
     points = models.IntegerField()
     
 class Hookup(models.Model):
-    #TODO figure out how to enforce only two hookers
-    hookers = models.ManyToManyField(HookrUser)
+    hookers = models.ManyToManyField(HookrUser, validators=[validate_two])
 
 class Share(models.Model):
     hookup = models.ForeignKey(Hookup)
