@@ -8,7 +8,7 @@ class HookrUser(User):
     
 class Hookup(models.model):
     hookers = Models.ManyToManyField(HookrUser)
-    def Hookup(self, hooker1, hooker2)
+    def create(self, hooker1, hooker2)
         self.hookers.clear() #This should ensure that there are only two hookers
         self.save() #Need a Primary Key before we can add hookers
         self.hookers.add(hooker1)
