@@ -1,0 +1,11 @@
+<form id="login_form" method="post" action="{% url django.contrib.auth.views.login %}" class="box login">
+    {{ form.username.label_tag }}
+    {{ form.username }}
+    {{ form.password.label_tag }}
+    {{ form.password }}
+    {% if form.errors %}
+        <p class="errorlist">*Incorrect username or password.</p>
+    {% endif %}
+    {% csrf_token %}
+    <input type="submit" class="btnLogin" value="Log In" tabindex="4">
+</form>
