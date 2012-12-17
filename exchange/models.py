@@ -10,22 +10,22 @@ class HookrUser(User):
 class Network(models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u')
-    def addUser(self, user):
+    def add_user(self, user):
         self.users.add(user)
         self.save()
         
 class ClosedNetwork(models.Model):
-    invitedusers = models.ManyToManyField(User, related_name='i')
-    def inviteuser(self, user):
-        self.invitedusers.add(user)
+    invited_users = models.ManyToManyField(HookrUser, related_name='i')
+    def invite_user(self, user):
+        self.invited_users.add(user)
         self.save()
-    def adduser(self, user):
+    def add_user(self, user):
         try:
-            self.invitedusers.get(pk=user.id)
+            self.invited_users.get(pk=user.id)
         except:
             raise ValidationError("User tried to join private group uninvited")
             return
-        self.inviteduser.remove(user)
+        self.invited_users.remove(user)
         self.users.add(user)
         self.save()
         
@@ -47,10 +47,10 @@ class Share(models.Model):
 class PotentialIPO(Hookup):
     DEFAULT_VOLUME = 100;
     DEFAULT_PRICE = 100;
-    numrequests = models.IntegerField()
-    def addrequests(self, numrequests):
-        self.numrequests += numrequests
-        if self.numrequests>PotentialIPO.DEFAULT_VOLUME:
+    num_requests = models.IntegerField()
+    def add_requests(self, num_requests):
+        self.num_requests += num_requests
+        if self.num_requests>PotentialIPO.DEFAULT_VOLUME:
             #TODO convert to hookup and distribute shares
             pass
         self.save()   
@@ -60,10 +60,12 @@ class Order(models.Model):
     owner = models.ForeignKey(HookrUser)
     price = models.IntegerField()
     volume = models.IntegerField()
-    createtime = models.DateTimeField(auto_now_add=True)
+    create_time = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField(blank=True, null=True)
     class Meta:
         abstract = True
+        get_latest_by = 'create_time'
+        ordering = ['create_time']
         
 class SellOrder(Order):
     def save(self):
@@ -81,4 +83,4 @@ class BuyOrder(Order):
 class IPOOrder(Order):
     def save(self):
         self.price = PotentialIPO.DEFAULT_PRICE
-        self.hookup.addrequests(self.volume)
+        self.hookup.add_requests(self.volume)
