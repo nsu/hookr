@@ -71,7 +71,7 @@ class PotentialIPO(Hookup):
                     new_share_group.save()
                     self.num_requests=0
                 else:
-                    new_share_group=ShareGroup(hookup=new_hookup, volume=order.volume, owner=order.owner)
+                    new_share_group = ShareGroup(hookup=new_hookup, volume=order.volume, owner=order.owner)
                     new_share_group.save()
                     self.num_requests-=order.volume
                 order.delete()
@@ -93,8 +93,8 @@ class Order(models.Model):
         
 class SellOrder(Order):
     def save(self):
-        shares = Shares.objects.filter(hookup=self.hookup, owner=self.owner)
-        if(len(shares)<self.volume):
+        shares = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
+        if(shares.volume<self.volume):
             raise ValidationError("User does not have enough points for buy order")
         super(SellOrder, self).save()
     
