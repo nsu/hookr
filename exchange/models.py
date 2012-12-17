@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 class HookrUser(User):
     points = models.IntegerField()
         
-    
 class Network(models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u')
@@ -36,13 +35,26 @@ class HookrProfile(models.Model):
     network = models.ForeignKey(Network)
 
 class Hookup(models.Model):
+    DEFAULT_DIVIDEND = 1000
     #TODO figure out how to enforce only two hookers
     hookers = models.ManyToManyField(HookrProfile)
     network = models.ForeignKey(Network) 
 
-class Share(models.Model):
+class ShareGroup(models.Model):
+    volume = models.IntegerField()
     hookup = models.ForeignKey(Hookup)
     owner = models.ForeignKey(HookrUser)
+    def selloff(self, volume):
+        if volume>self.volume:
+            raise ValidationError("Tried to sell more shares than existed")
+        self.volume -= volume
+        if self.volume == 0:
+            self.delete()
+        else:
+            self.save()
+    def add_shares(self, volume):
+        self.volume += volume
+        self.save()
         
 class PotentialIPO(Hookup):
     DEFAULT_VOLUME = 100;
@@ -51,8 +63,20 @@ class PotentialIPO(Hookup):
     def add_requests(self, num_requests):
         self.num_requests += num_requests
         if self.num_requests>PotentialIPO.DEFAULT_VOLUME:
-            #TODO convert to hookup and distribute shares
-            pass
+            new_hookup = Hookup(hookup=self.hookup)
+            new_hookup.save()
+            for order in IPOOrder.objects.filter(hookup=self):
+                if(order.volume>self.num_requests and self.num_requests!=0):
+                    new_share_group=ShareGroup(hookup=new_hookup, volume=self.num_requests, owner=order.owner)
+                    new_share_group.save()
+                    self.num_requests=0
+                else:
+                    new_share_group=ShareGroup(hookup=new_hookup, volume=order.volume, owner=order.owner)
+                    new_share_group.save()
+                    self.num_requests-=order.volume
+                order.delete()
+            self.delete()
+            return
         self.save()   
                 
 class Order(models.Model):
