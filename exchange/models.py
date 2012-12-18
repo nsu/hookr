@@ -8,13 +8,15 @@ class HookrUser(User):
         
 class Network(models.Model):
     name = models.CharField(max_length=255)
-    users = models.ManyToManyField(HookrUser, related_name='u')
+    users = models.ManyToManyField(HookrUser, related_name='u', blank=True, null=True)
     def add_user(self, user):
         self.users.add(user)
         self.save()
+    def __unicode__(self):
+        return self.name
         
 class ClosedNetwork(models.Model):
-    invited_users = models.ManyToManyField(HookrUser, related_name='i')
+    invited_users = models.ManyToManyField(HookrUser, related_name='i', blank=True, null=True)
     def invite_user(self, user):
         self.invited_users.add(user)
         self.save()
@@ -33,6 +35,8 @@ class HookrProfile(models.Model):
     lastname = models.CharField(max_length=255)
     user = models.ForeignKey(HookrUser, blank=True, null=True)
     network = models.ForeignKey(Network)
+    def __unicode__(self):
+        return self.firstname+' '+self.lastname
 
 class Hookup(models.Model):
     DEFAULT_DIVIDEND = 1000
@@ -41,6 +45,8 @@ class Hookup(models.Model):
     network = models.ForeignKey(Network)
     #TODO nickname polling system
     #nickname = models.CharField(max_length=255)
+    def __unicode__(self):
+        return self.hookers+'('+self.network+')'
     
 class PotentialIPO(Hookup):
     DEFAULT_VOLUME = 100;
