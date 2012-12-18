@@ -38,24 +38,10 @@ class Hookup(models.Model):
     DEFAULT_DIVIDEND = 1000
     #TODO figure out how to enforce only two hookers
     hookers = models.ManyToManyField(HookrProfile)
-    network = models.ForeignKey(Network) 
-
-class ShareGroup(models.Model):
-    volume = models.IntegerField()
-    hookup = models.ForeignKey(Hookup)
-    owner = models.ForeignKey(HookrUser)
-    def selloff(self, volume):
-        if volume>self.volume:
-            raise ValidationError("Tried to sell more shares than existed")
-        self.volume -= volume
-        if self.volume == 0:
-            self.delete()
-        else:
-            self.save()
-    def add_shares(self, volume):
-        self.volume += volume
-        self.save()
-        
+    network = models.ForeignKey(Network)
+    #TODO nickname polling system
+    #nickname = models.CharField(max_length=255)
+    
 class PotentialIPO(Hookup):
     DEFAULT_VOLUME = 100;
     DEFAULT_PRICE = 100;
@@ -77,6 +63,22 @@ class PotentialIPO(Hookup):
                 order.delete()
             self.delete()
             return
+        self.save()
+        
+class ShareGroup(models.Model):
+    volume = models.IntegerField()
+    hookup = models.ForeignKey(Hookup)
+    owner = models.ForeignKey(HookrUser)
+    def selloff(self, volume):
+        if volume>self.volume:
+            raise ValidationError("Tried to sell more shares than existed")
+        self.volume -= volume
+        if self.volume == 0:
+            self.delete()
+        else:
+            self.save()
+    def add_shares(self, volume):
+        self.volume += volume
         self.save()   
                 
 class Order(models.Model):
@@ -86,6 +88,8 @@ class Order(models.Model):
     volume = models.IntegerField()
     create_time = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField(blank=True, null=True)
+    def cancel(self):
+        self.delete()
     class Meta:
         abstract = True
         get_latest_by = 'create_time'
@@ -99,12 +103,21 @@ class SellOrder(Order):
         super(SellOrder, self).save()
     
 class BuyOrder(Order):
+    def reserve_funds(self):
+        self.owner.points -= self.price*self.volume
+        self.owner.save()
+    def cancel(self):
+        self.owner.points += self.price*self.volume
+        self.owner.save()
+        self.delete()
     def save(self):
         if(self.owner.points<(self.price*self.volume)):
             raise ValidationError("User does not have enough points for buy order")
         super(BuyOrder, self).save()
 
-class IPOOrder(Order):
+class IPOOrder(BuyOrder):
     def save(self):
         self.price = PotentialIPO.DEFAULT_PRICE
+        super(BuyOrder, self).save()
         self.hookup.add_requests(self.volume)
+        self.hookup.save()
