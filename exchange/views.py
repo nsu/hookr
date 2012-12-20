@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.forms import ModelForm
-from exchange.forms import HookupForm
+from exchange.forms import HookupForm, IPOForm
 from exchange.models import *
 from django.db.models import Q
 from django.template import Context, loader
@@ -13,21 +13,46 @@ def join_network(request, network):
     return HTTPResponse("Added User")
     
 @login_required
-def get_hookup(request, network):
+def order_ipo(request, network):
     network=Network.objects.get(name=network)
     if request.method == 'POST':
-        #Create a new Example instance using the information contained in request.method is the method if POST
-        newHookup = Hookup(network=network)                           #Build the form using an exist Example instance with the user as the author
+        form = IPOForm(network, request.POST)
+        if form.is_valid():
+            hookr_user=HookrUser.objects.get(id=request.user.id)
+            hookup=form.cleaned_data['hookup']
+            volume=form.cleaned_data['volume']
+            new_order=IPOOrder(hookup=hookup, volume=volume, owner=hookr_user)
+            new_order.save()
+            hookup.add_requests(num_requests=volume)
+            return HttpResponse('True')
+        else:
+            return HttpResponse('False')
+    else:
+        form = IPOForm(network)
+        return render(request, 'formTemplate.html',{
+            'form': form
+        })
+
+@login_required
+def make_hookup(request, network):
+    network=Network.objects.get(name=network)
+    if request.method == 'POST':
         form = HookupForm(network, request.POST)
-        if form.is_valid():                                                  #Save the Example to database if the form is valid then redirect current directory to home
-            newHookup.save()        
-            newHookup.hookers=form.cleaned_data['hookers']
-            newHookup.save()
+        if form.is_valid():
+            hookers=form.cleaned_data['hookers']
+            try:
+                hookup = PotentialIPO.objects.get(network=network, hookers=hookers)
+            except:
+                hookup = PotentialIPO(network=network, num_requests=0)
+                hookup.save()
+                hookup.hookers.add(hookers[0])
+                hookup.hookers.add(hookers[1])
+                hookup.save()
             return HttpResponse('True')
         else:
             return HttpResponse('False')
     else:
         form = HookupForm(network)
-        return render(request, 'formTemplate.html',{                                #Render the request to formTemplate.html, map 'form' in the HTML file to the form variable in the view
+        return render(request, 'formTemplate.html',{
             'form': form
         })

@@ -46,12 +46,12 @@ class Hookup(models.Model):
     #TODO nickname polling system
     #nickname = models.CharField(max_length=255)
     def __unicode__(self):
-        return self.hookers+'('+self.network+')'
+        return self.hookers.all()[0].__unicode__()+'<3'+self.hookers.all()[1].__unicode__()+'('+self.network.__unicode__()+')'
     
 class PotentialIPO(Hookup):
     DEFAULT_VOLUME = 100;
     DEFAULT_PRICE = 100;
-    num_requests = models.IntegerField()
+    num_requests = models.IntegerField(default=0)
     def add_requests(self, num_requests):
         self.num_requests += num_requests
         if self.num_requests>PotentialIPO.DEFAULT_VOLUME:
@@ -70,6 +70,7 @@ class PotentialIPO(Hookup):
             self.delete()
             return
         self.save()
+        return
         
 class ShareGroup(models.Model):
     volume = models.IntegerField()
