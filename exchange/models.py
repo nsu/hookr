@@ -45,7 +45,7 @@ class Hookup(models.Model):
     #TODO nickname polling system
     #nickname = models.CharField(max_length=255
     def save(self, *args, **kwargs):
-        if((self.hookers.count==2) or (self.pk is None)): #Need to allow initial save for manytomany relationship
+        if((self.pk is None) or (self.hookers.count==2)): #Need to allow initial save for manytomany relationship
             super(Hookup, self).save(*args, **kwargs)
         else:
             raise ValidationError("There must be two hookers in a hookup")
