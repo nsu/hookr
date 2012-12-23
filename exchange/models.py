@@ -14,7 +14,7 @@ class Network(models.Model):
         self.save()
     def __unicode__(self):
         return self.name
-        
+    
 class ClosedNetwork(models.Model):
     invited_users = models.ManyToManyField(HookrUser, related_name='i', blank=True, null=True)
     def invite_user(self, user):
@@ -40,33 +40,51 @@ class HookrProfile(models.Model):
 
 class Hookup(models.Model):
     DEFAULT_DIVIDEND = 1000
-    #TODO figure out how to enforce only two hookers
     hookers = models.ManyToManyField(HookrProfile)
     network = models.ForeignKey(Network)
     #TODO nickname polling system
-    #nickname = models.CharField(max_length=255)
+    #nickname = models.CharField(max_length=255
+    def save(self, *args, **kwargs):
+        if((self.hookers.count==2) or (self.pk is None)): #Need to allow initial save for manytomany relationship
+            super(Hookup, self).save(*args, **kwargs)
+        else:
+            raise ValidationError("There must be two hookers in a hookup")
+        return
+    
     def __unicode__(self):
-        return self.hookers.all()[0].__unicode__()+'<3'+self.hookers.all()[1].__unicode__()+'('+self.network.__unicode__()+')'
+        mystr=''
+        for hooker in self.hookers.all():
+            mystr=mystr+hooker.__unicode__()
+        return mystr+'('+self.network.__unicode__()+')'
     
 class PotentialIPO(Hookup):
-    DEFAULT_VOLUME = 100;
-    DEFAULT_PRICE = 100;
+    DEFAULT_VOLUME = 150
+    DEFAULT_PRICE = 100
     num_requests = models.IntegerField(default=0)
-    def add_requests(self, num_requests):
-        self.num_requests += num_requests
-        if self.num_requests>PotentialIPO.DEFAULT_VOLUME:
-            new_hookup = Hookup(hookup=self.hookup)
-            new_hookup.save()
-            for order in IPOOrder.objects.filter(hookup=self):
-                if(order.volume>self.num_requests and self.num_requests!=0):
-                    new_share_group=ShareGroup(hookup=new_hookup, volume=self.num_requests, owner=order.owner)
+    def convert_to_hookup(self):
+        new_hookup = Hookup(network=self.network) #Make the new hookup (not just a potential IPO anymore)
+        new_hookup.save()
+        for hooker in self.hookers.all():
+            new_hookup.hookers.add(hooker)
+        new_hookup.save()
+        for order in IPOOrder.objects.filter(hookup=self): #Distribute shares to users who first requested them
+            if(self.num_requests!=0):
+                if(order.volume>=self.num_requests):
+                    new_share_group = ShareGroup(hookup=new_hookup, volume=self.num_requests, owner=order.owner) #distribute remaining shares
                     new_share_group.save()
                     self.num_requests=0
                 else:
-                    new_share_group = ShareGroup(hookup=new_hookup, volume=order.volume, owner=order.owner)
+                    new_share_group = ShareGroup(hookup=new_hookup, volume=order.volume, owner=order.owner) #Give as many shares as were requested
                     new_share_group.save()
-                    self.num_requests-=order.volume
-                order.delete()
+                    self.num_requests -= order.volume
+            order.delete()
+        self.delete()
+        return new_hookup
+    def add_requests(self, num_requests):
+        self.num_requests += num_requests
+        if self.num_requests>=PotentialIPO.DEFAULT_VOLUME: #Here goes the IPO
+            self.num_requests = PotentialIPO.DEFAULT_VOLUME #We don't want to distribute more than this
+            self.convert_to_hookup()
             self.delete()
             return
         self.save()
@@ -101,13 +119,15 @@ class Order(models.Model):
         abstract = True
         get_latest_by = 'create_time'
         ordering = ['create_time']
+    def __unicode__(self):
+        return self.hookup.__unicode__()+'('+self.owner.__unicode__()+')'
         
 class SellOrder(Order):
-    def save(self):
+    def save(self, *args, **kwargs):
         shares = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
         if(shares.volume<self.volume):
-            raise ValidationError("User does not have enough points for buy order")
-        super(SellOrder, self).save()
+            raise ValidationError("User does not have enough shares for sell order")
+        super(SellOrder, self).save(*args, **kwargs)
     
 class BuyOrder(Order):
     def reserve_funds(self):
@@ -117,14 +137,14 @@ class BuyOrder(Order):
         self.owner.points += self.price*self.volume
         self.owner.save()
         self.delete()
-    def save(self):
+    def save(self, *args, **kwargs):
         if(self.owner.points<(self.price*self.volume)):
             raise ValidationError("User does not have enough points for buy order")
-        super(BuyOrder, self).save()
+        super(BuyOrder, self).save(*args, **kwargs)
 
 class IPOOrder(BuyOrder):
-    def save(self):
+    def save(self, *args, **kwargs):
         self.price = PotentialIPO.DEFAULT_PRICE
         super(BuyOrder, self).save()
         self.hookup.add_requests(self.volume)
-        self.hookup.save()
+        self.hookup.save(*args, **kwargs)
