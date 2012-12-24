@@ -45,7 +45,7 @@ class Hookup(models.Model):
     #TODO nickname polling system
     #nickname = models.CharField(max_length=255
     def save(self, *args, **kwargs):
-        if((self.hookers.count==2) or (self.pk is None)): #Need to allow initial save for manytomany relationship
+        if((self.pk is None) or (self.hookers.count()==2)): #Need to allow initial save for manytomany relationship
             super(Hookup, self).save(*args, **kwargs)
         else:
             raise ValidationError("There must be two hookers in a hookup")
@@ -129,7 +129,7 @@ class SellOrder(Order):
             raise ValidationError("User does not have enough shares for sell order")
         super(SellOrder, self).save(*args, **kwargs)
     
-class BuyOrder(Order):
+class BaseBuyOrder(Order):
     def reserve_funds(self):
         self.owner.points -= self.price*self.volume
         self.owner.save()
@@ -140,11 +140,17 @@ class BuyOrder(Order):
     def save(self, *args, **kwargs):
         if(self.owner.points<(self.price*self.volume)):
             raise ValidationError("User does not have enough points for buy order")
-        super(BuyOrder, self).save(*args, **kwargs)
+        super(BaseBuyOrder, self).save(*args, **kwargs)
+    class Meta:
+        abstract = True
 
-class IPOOrder(BuyOrder):
+class BuyOrder(BaseBuyOrder):
+    pass
+
+class IPOOrder(BaseBuyOrder):
     def save(self, *args, **kwargs):
         self.price = PotentialIPO.DEFAULT_PRICE
-        super(BuyOrder, self).save()
-        self.hookup.add_requests(self.volume)
-        self.hookup.save(*args, **kwargs)
+        super(IPOOrder, self).save(*args, **kwargs)
+        ipo = PotentialIPO.objects.get(id=self.hookup.id)
+        ipo.add_requests(self.volume)
+        ipo.save()

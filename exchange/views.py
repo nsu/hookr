@@ -66,6 +66,7 @@ def make_hookup(request, network):
                 hookup.save()
                 hookup.hookers.add(hookers[0])
                 hookup.hookers.add(hookers[1])
+                print hookup.hookers.count
                 hookup.save()
             return HttpResponse('True')
         else:
