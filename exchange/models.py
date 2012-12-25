@@ -4,9 +4,19 @@ from django.contrib.auth.models import User, Permission
 from django.core.exceptions import ValidationError
 
 class HookrUser(User):
+    """
+	This is the hookr user class.
+	It is bound to the django builtin User class.
+	It contains an integerfield representing the number of points a user has
+	"""
     points = models.IntegerField()
         
 class Network(models.Model):
+    """
+	This is the network class.
+	It represents the "networks" or "exchanges" that hookups and shares exist in.
+	It has a name (which is a charfield) and a collection of HookrUsers.
+	"""
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u', blank=True, null=True)
     def add_user(self, user):
@@ -14,8 +24,15 @@ class Network(models.Model):
         self.save()
     def __unicode__(self):
         return self.name
+    class Meta:
+        abstract = True
     
 class ClosedNetwork(models.Model):
+    """
+	This is the closed network class.
+	It extends the functionality of a network to allow the creation of exclusive, "invitation only" networks
+	It has a list of HookrUsers who have been invited (but have not accepted their invitations)
+	"""
     invited_users = models.ManyToManyField(HookrUser, related_name='i', blank=True, null=True)
     def invite_user(self, user):
         self.invited_users.add(user)
@@ -31,6 +48,11 @@ class ClosedNetwork(models.Model):
         self.save()
         
 class HookrProfile(models.Model):
+    """
+	This is the hookr profile class.
+    Hooker profiles belong to networks and represent people who hook up.
+	Profiles have a firstname, lastname, network, and, optionally, a hookr user association.
+	"""
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     user = models.ForeignKey(HookrUser, blank=True, null=True)
@@ -39,6 +61,11 @@ class HookrProfile(models.Model):
         return self.firstname+' '+self.lastname
 
 class Hookup(models.Model):
+    """
+	This is the hookup class.
+    Hookups exist in the context of a particular network and are associated with Shares
+	Hookups are associated with exactly two hookr profiles and one network
+	"""
     DEFAULT_DIVIDEND = 1000
     hookers = models.ManyToManyField(HookrProfile)
     network = models.ForeignKey(Network)
@@ -58,6 +85,12 @@ class Hookup(models.Model):
         return mystr+'('+self.network.__unicode__()+')'
     
 class PotentialIPO(Hookup):
+    """
+	This is the potential ipo class.
+    Potential IPOs are hookups that are not yet associated with shares
+	Potential IPOs have a number of requests for shares of their hookup
+	and default information associated with IPOs (namely, volume and pricing)
+	"""
     DEFAULT_VOLUME = 150
     DEFAULT_PRICE = 100
     num_requests = models.IntegerField(default=0)
@@ -91,6 +124,12 @@ class PotentialIPO(Hookup):
         return
         
 class ShareGroup(models.Model):
+    """
+	This is the share group class.
+    Share Groups are information about the purchases of a particular user
+	Share Groups have a volume (the number of shares), a hookup, and an owner
+	Two share groups should never have the same owner and hookup at the same time
+	"""
     volume = models.IntegerField()
     hookup = models.ForeignKey(Hookup)
     owner = models.ForeignKey(HookrUser)
@@ -104,9 +143,18 @@ class ShareGroup(models.Model):
             self.save()
     def add_shares(self, volume):
         self.volume += volume
-        self.save()   
+        self.save()
+    #TODO Two share groups should never have the same owner and hookup at the same time
                 
 class Order(models.Model):
+    """
+	This is the Order class.
+    Orders are information about transactions involving share groups
+	Orders are an abstract type extended by all actions that can be a performed by
+	a user involving shares
+	Orders have an associated hookup, price, and volume. They aditionally have
+	DateTimeFields for when they were created and, optionally, when they expire
+	"""
     hookup = models.ForeignKey(Hookup)
     owner = models.ForeignKey(HookrUser)
     price = models.IntegerField()
@@ -123,6 +171,11 @@ class Order(models.Model):
         return self.hookup.__unicode__()+'('+self.owner.__unicode__()+')'
         
 class SellOrder(Order):
+    """
+	This is the sell order class.
+    it contains validation necessary for selling shares
+	"""
+	#TODO ensure multiple orders do not exist for the same share group.
     def save(self, *args, **kwargs):
         shares = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
         if(shares.volume<self.volume):
@@ -130,6 +183,12 @@ class SellOrder(Order):
         super(SellOrder, self).save(*args, **kwargs)
     
 class BaseBuyOrder(Order):
+    """
+	This is the base class for buy orders.
+    It is an abstract class. It contains validation necessary
+    for buying shares and also ensures that a user's points
+    are reserved unless the order is cancelled.
+	"""
     def reserve_funds(self):
         self.owner.points -= self.price*self.volume
         self.owner.save()
@@ -145,9 +204,20 @@ class BaseBuyOrder(Order):
         abstract = True
 
 class BuyOrder(BaseBuyOrder):
+    """
+    This is the buy order class.
+    This is the non-abstract version of the BaseBuyOrder
+    """
     pass
 
 class IPOOrder(BaseBuyOrder):
+    """
+    This is the IPO order class.
+    It is like a buy order except that the price is set as the default
+    for IPOs.
+    It should be associated with a PotentialIPO and not just a Hookup.
+    """
+    #TODO It should be associated with a PotentialIPO and not just a Hookup.
     def save(self, *args, **kwargs):
         self.price = PotentialIPO.DEFAULT_PRICE
         super(IPOOrder, self).save(*args, **kwargs)
