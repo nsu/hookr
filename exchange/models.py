@@ -186,10 +186,14 @@ class SellOrder(Order):
 	This is the sell order class.
     it contains validation necessary for selling shares
 	"""
-	#TODO ensure multiple orders do not exist for the same share group.
     def save(self, *args, **kwargs):
         shares = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
-        if(shares.volume<self.volume):
+        other_orders = SellOrder.objects.filter(hookup=self.hookup, owner=self.owner)
+        reserved=0
+        for order in other_orders:
+            if order!=self:
+                reserved+=order.volume
+        if((shares.volume-reserved)<self.volume):
             raise ValidationError("User does not have enough shares for sell order")
         super(SellOrder, self).save(*args, **kwargs)
     
