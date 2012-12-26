@@ -215,10 +215,13 @@ class IPOOrder(BaseBuyOrder):
     for IPOs.
     It should be associated with a PotentialIPO and not just a Hookup.
     """
-    #TODO It should be associated with a PotentialIPO and not just a Hookup.
     def save(self, *args, **kwargs):
-        self.price = PotentialIPO.DEFAULT_PRICE
-        super(IPOOrder, self).save(*args, **kwargs)
-        ipo = PotentialIPO.objects.get(id=self.hookup.id)
-        ipo.add_requests(self.volume)
-        ipo.save()
+        try:
+            PotentialIPO.objects.get(id=self.hookup.id)
+            self.price = PotentialIPO.DEFAULT_PRICE
+            super(IPOOrder, self).save(*args, **kwargs)
+            ipo = PotentialIPO.objects.get(id=self.hookup.id)
+            ipo.add_requests(self.volume)
+            ipo.save()
+        except DoesNotExist:
+            raise ValidationError("IPOOrder associated with Hookup (not PotentialIPO)")
