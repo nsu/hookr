@@ -38,7 +38,7 @@ class ClosedNetwork(models.Model):
     def add_user(self, user):
         try:
             self.invited_users.get(pk=user.id)
-        except:
+        except HookrUser.DoesNotExist:
             raise ValidationError("User tried to join private group uninvited")
             return
         self.invited_users.remove(user)
@@ -142,7 +142,20 @@ class ShareGroup(models.Model):
     def add_shares(self, volume):
         self.volume += volume
         self.save()
-    #TODO Two share groups should never have the same owner and hookup at the same time
+    def save(self, is_first=False, *args, **kwargs):
+        #Verify that this is the only sharegroup belonging to this user for this hookup, if not just add this volume to the other one
+        if(is_first):
+            super(ShareGroup, self).save(*args, **kwargs)
+            return
+        try:
+            other = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
+            other.volume+=self.volume
+            other.save(is_first=True)
+            if(self.pk is None):
+                return
+            self.delete()
+        except ShareGroup.DoesNotExist:
+            super(ShareGroup, self).save(*args, **kwargs)
                 
 class Order(models.Model):
     """
