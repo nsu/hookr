@@ -144,18 +144,18 @@ class ShareGroup(models.Model):
         self.save()
     def save(self, is_first=False, *args, **kwargs):
         #Verify that this is the only sharegroup belonging to this user for this hookup, if not just add this volume to the other one
-        if(is_first):
-            super(ShareGroup, self).save(*args, **kwargs)
-            return
+        #if(is_first):
+        #    super(ShareGroup, self).save(*args, **kwargs)
+        #    return
         try:
             other = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
-            other.volume+=self.volume
-            other.save(is_first=True)
-            if(self.pk is None):
+            if other!=self:
+                other.volume+=self.volume
+                other.save(is_first=True)
                 return
-            self.delete()
         except ShareGroup.DoesNotExist:
-            super(ShareGroup, self).save(*args, **kwargs)
+            pass
+        super(ShareGroup, self).save(*args, **kwargs)
                 
 class Order(models.Model):
     """
