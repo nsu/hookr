@@ -23,6 +23,7 @@ def order_ipo(request, network):
             volume=form.cleaned_data['volume']
             new_order=IPOOrder(hookup=hookup, volume=volume, owner=hookr_user)
             new_order.save()
+            new_order.reserve_funds()
             return HttpResponse('True')
         else:
             return HttpResponse('False')
@@ -43,6 +44,7 @@ def order(request, network):
             volume=form.cleaned_data['volume']
             new_order=BuyOrder(hookup=hookup, volume=volume, owner=hookr_user)
             new_order.save()
+            new_order.reserve_funds()
             return HttpResponse('True')
         else:
             return HttpResponse('False')
@@ -66,6 +68,7 @@ def make_hookup(request, network):
                 hookup.save()
                 hookup.hookers.add(hookers[0])
                 hookup.hookers.add(hookers[1])
+                print hookup.hookers.count
                 hookup.save()
             return HttpResponse('True')
         else:
