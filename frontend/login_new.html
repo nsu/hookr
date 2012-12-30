@@ -1,0 +1,72 @@
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script>
+    $(document).ready(function(){
+        $(".signup").click(function(){
+            $("#login-box").fadeOut("medium");
+            $("#signup-box").delay(700).fadeIn("medium");
+        })
+
+        $("#new-password").keyup(function(){
+            if ($("#confirm-password").val() && $(this).val() != $("#confirm-password").val()) {
+                $("#passwords-equal").fadeIn("fast");
+                $("#passwords-equal").css("background", "#E24B2C");
+            } else {
+                $("#passwords-equal").stop().fadeOut("medium");
+            }
+        });
+
+        $("#confirm-password").keyup(function(){
+            $("#passwords-equal").fadeIn("fast");
+            if ($(this).val() == $("#new-password").val()){
+                $("#passwords-equal").stop().fadeOut("medium");
+            } else{
+                $("#passwords-equal").css("background", "#E24B2C")
+            }
+        });
+    })
+</script>
+
+</head>
+
+<body>
+<div id="container">  
+    <div id="header">
+        <div class="name">
+        hookr
+        </div>
+    </div>
+
+      <div id="signup-box" class="login-signup-box">
+        <h1>Signup</h1>
+        <div id="form-box">
+            <form>
+                <input type="text" id="login" class="input" placeholder="username" />
+                <input type="password" id="new-password" class="input" placeholder="password" />
+                <input type="password" id="confirm-password" class="input" placeholder="confirm" />
+                <div id="passwords-equal"></div>
+            </form>
+            <button class="create">create</button>
+        </div>
+     </div>
+
+      <div id="login-box" class="login-signup-box">
+        <h1>login</h1>
+        <div id="form-box">
+            <form>
+                <input type="text" id="login" class="input" placeholder="username" />
+                <input type="password" id="password" class="input" placeholder="password" />
+            </form>
+            <button class="login">login</button>
+            <button class="signup">sign-up</button>
+        </div>
+     </div>
+
+</div>
+</body>
+
+</html>
