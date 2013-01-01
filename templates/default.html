@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bootstrap 101 Template</title>
+    <!-- Bootstrap -->
+    <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{{STATIC_URL}}override.css" rel="stylesheet" media="screen">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+    <script src="http://d3js.org/d3.v3.js"></script>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <div class="navbar">
+    <div class="navbar-inner">
+      <a class="brand" href="#">hookr</a>
+      <ul class="nav pull-right">
+        <li><a class="" href="{% url django.contrib.auth.views.logout_then_login %}">Logout</a></li>
+      </ul>
+      <form class="navbar-search pull-right", style="margin-top: 7px">
+      <input type="text" class="search-query" placeholder="Search">
+    </form>
+    </div>
+    </div>
+
+<div class="container>"
+    <div class="row">
+      <div class="span3 left-panel">
+          <h1>MY HOOKUPS</h1>
+          <ul>
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-up"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">+192</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Alex Karpinski</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Darcy Bird</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-down"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">-149</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Austin Federa</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Lou Fogel</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-up"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">+391</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Ben Blier</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Yamaha PM5-D</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-up"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">+383</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Kay Holland</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Anyone</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-down"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">-256</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Darcy Bird</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Alex Karpinski</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-up"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">+160</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Lorem Ipsum</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Dolor Sit</p>
+              </div>
+            </li>
+
+            <li class="standard-box">
+              <div class="points">
+                <div class="stock-up"></div>
+                <div class="point-count" style="margin-top:10px; font-family: Futura LT">-100</div>
+              </div>
+              <div class="description">
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase; margin-bottom: 10px; margin-top: 2px">Austin Federa</p>
+                <p style="text-align: center; font-family: Futura LT; text-transform: uppercase;">Lou Fogel</p>
+              </div>
+            </li>
+          </ul>
+      </div>
+
+      <div class="span7 main-content">
+            <script src="{{STATIC_URL}}main-graph.js"></script>
+            <ul class="news-list">
+              <li class="standard-box">
+                <div style="float: left; height: 80px">
+                <img class="avatar" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-snc6/623523_617433351_1033914225_q.jpg" />
+                </div>
+                
+                <div class="hookr-title">
+                    <a href="#">
+                    Kay Holland
+                    </a>
+                </div>
+                
+                <div class="update-text">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
+                  </p>
+                </div>
+
+              </li>
+              
+              <li class="standard-box">
+                <div style="float: left; height: 80px">
+                <img class="avatar" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash4/260803_681966568_837455753_q.jpg" />
+                </div>
+                
+                <div class="hookr-title">
+                    <a href="#">
+                    Lou Fogel
+                    </a>
+                </div>
+                
+                <div class="update-text">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
+                  </p>
+                </div>
+
+              </li>
+
+            </ul>
+      </div>
+
+      <div class="span2 right-panel">
+        <h1>TRENDING</h1>
+          <ul>
+            <li class="standard-box"> 
+              Ben Blier
+              <br />
+              Austin Federa
+            </li>
+          </ul>
+      </div>
+
+    </div>
+
+</div>
+
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>

@@ -19,12 +19,14 @@ class Network(models.Model):
 	"""
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u', blank=True, null=True)
+
     def add_user(self, user):
         self.users.add(user)
         self.save()
+
     def __unicode__(self):
         return self.name
-    
+
 class ClosedNetwork(models.Model):
     """
 	This is the closed network class.

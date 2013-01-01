@@ -1,0 +1,191 @@
+.navbar-inner {
+    background: none;
+    height: 45px;
+    background-color: #55C3DC;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+.navbar .brand  {
+    letter-spacing: 2px;
+    float: left;
+    padding: 15px 15px 0px;
+    font-family: Mission Script;
+    color: #E7F3EF;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
+    font-size: 40px;
+}
+
+.btn {
+    font-family: Futura LT;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #E7F3EF;
+    text-align: center;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
+    font-size: 10px;
+
+    border: none;
+    border-radius: 4px;
+    padding-top: 5px;
+    padding-left: 10px;
+
+    background: #EC6C20;
+}
+
+.btn:hover{
+    background-color: #EC6020;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
+    color: #E7F3EF;
+}
+
+.btn:active{
+    background-color: #8C6429;
+    color: #E7F3EF;
+}
+
+.navbar .nav > li > a {
+    padding-top: 13px;
+    color: #E7F3EF;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, .52);
+    letter-spacing: 3px;
+    font-size: 12px;
+    text-transform: uppercase;
+
+}
+
+.navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
+    color: #f3e7eb;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, .52);
+}   
+
+.navbar .nav > li > a:active {
+    color: #f3e7eb;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
+}   
+
+.standard-box {
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.65);
+    min-height: 50px;
+    border-radius: 4px;
+    border: 1px solid #DDD;
+    list-style: none;
+    font-size: 13px;
+    color: #333;
+    line-height: 18px;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.left-panel h1, .right-panel h1 {
+    font-weight: 400;
+    font-family: Futura LT;
+    letter-spacing: 2px;
+    font-size: 23px;
+    color: rgba(0, 0, 0, .52);
+    text-shadow: 0px -1px 0px rgba(255, 255, 255 .52);
+    text-align: center;
+    padding-left: 20px;
+    margin-top: 0px;
+}
+
+.stock-up {
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    
+    border-bottom: 20px solid rgba(236, 108, 32, .75);
+}
+
+.stock-down {
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    
+    border-top: 20px solid #3F96F3;
+}
+
+.left-panel .points {
+    width: 40px;
+    border-right: 1px solid #DDD;
+    padding-right: 10px;
+    margin-right: 10px;
+    float: left;
+}
+
+.points .point-count {
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.points .description {
+    float: left;
+}
+
+.description p {
+    text-align: center;
+    font-family: Futura LT; 
+    text-transform: uppercase;
+    margin-bottom: 10px; 
+    margin-top: 2px;
+}
+
+.news-list{
+    margin-top: 17px;
+}
+
+.news-list .standard-box {
+    min-height: 60px;
+    padding-top: 10px;
+    max-height: 80px;
+}
+
+.avatar {
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .52);
+}
+
+.hookr-title {
+    width: 100%;
+    height: 20px;
+}
+
+.hookr-title a{
+    float: left;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.news-list .update-text {
+    padding-left: 60px;
+    font-family: Ubuntu;
+}
+
+/*D3 styling*/
+
+svg {
+  font-size: 10px;
+}
+
+path {
+  fill: rgba(236, 108, 32, .2);
+}
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #E7F3EF;
+  fill-opacity: .0825;
+  shape-rendering: crispEdges;
+3}

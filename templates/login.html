@@ -1,11 +1,80 @@
-<form id="login_form" method="post" action="{% url django.contrib.auth.views.login %}" class="box login">
-    {{ form.username.label_tag }}
-    {{ form.username }}
-    {{ form.password.label_tag }}
-    {{ form.password }}
-    {% if form.errors %}
-        <p class="errorlist">*Incorrect username or password.</p>
-    {% endif %}
-    {% csrf_token %}
-    <input type="submit" class="btnLogin" value="Log In" tabindex="4">
-</form>
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
+
+<script>
+    $(document).ready(function(){
+        $(".signup").click(function(){
+            $("#login-box").fadeOut("medium");
+            $("#signup-box").delay(700).fadeIn("medium");
+        })
+
+        $("button.back").click(function(){
+            $("#signup-box").fadeOut("medium");
+            $("#login-box").delay(700).fadeIn("medium");
+        })        
+
+        $("#new-password").keyup(function(){
+            if ($("#confirm-password").val() && $(this).val() != $("#confirm-password").val()) {
+                $("#passwords-equal").fadeIn("fast");
+                $("#passwords-equal").css("background", "#E24B2C");
+            } else {
+                $("#passwords-equal").stop().fadeOut("medium");
+            }
+        });
+
+        $("#confirm-password").keyup(function(){
+            $("#passwords-equal").fadeIn("fast");
+            if ($(this).val() == $("#new-password").val()){
+                $("#passwords-equal").stop().fadeOut("medium");
+            } else{
+                $("#passwords-equal").css("background", "#E24B2C")
+            }
+        });
+    })
+</script>
+
+</head>
+
+<body>
+<div id="container">  
+    <div id="header">
+        <div class="name">
+            <a href="/"> hookr</a>
+        </div>
+    </div>
+
+      <div id="signup-box" class="login-signup-box">
+        <h1>Signup</h1>
+        <div id="form-box">
+            <form>
+                <input type="text" id="login" class="input" placeholder="username" />
+                <input type="password" id="new-password" class="input" placeholder="password" />
+                <input type="password" id="confirm-password" class="input" placeholder="confirm" />
+                <div id="passwords-equal"></div>
+            </form>
+            <button class="create">create</button>
+            <button class="back">login</button>
+        </div>
+     </div>
+
+      <div id="login-box" class="login-signup-box">
+        <h1>login</h1>
+        <div id="form-box">
+            <form id="login_form" method="post" action="{% url django.contrib.auth.views.login %}">
+                <input id="id_username" type="text" name="username" maxlength="30" placeholder="username" />
+                <input type="password" name="password" id="id_password" placeholder="password" />
+                <button class="signup">sign-up</button>
+                <button type="submit" class="login">login</button>
+                {% csrf_token %}
+                {{form.errors}}
+            </form>
+        </div>
+     </div>
+
+</div>
+</body>
+
+</html>
