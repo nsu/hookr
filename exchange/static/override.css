@@ -80,7 +80,7 @@
     padding-left: 10px;
 }
 
-.left-panel h1, .right-panel h1 {
+.left-panel h1, .right-panel h1, .main-content h1 {
     font-weight: 400;
     font-family: Futura LT;
     letter-spacing: 2px;
@@ -165,6 +165,26 @@
     padding-left: 60px;
     font-family: Ubuntu;
 }
+
+.right-panel {
+    margin-left: 0px;
+    width: 200px;
+}
+
+.trending-names {
+    width: 163px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align:center;
+    line-height: 20px;
+}
+
+.standard-box hr {
+    margin: 10px;
+}
+
 
 /*D3 styling*/
 
