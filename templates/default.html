@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+{% load dajaxice_templatetags %}
 <html>
   <head>
     <title>Bootstrap 101 Template</title>
+    {% dajaxice_js_import %}
     <!-- Bootstrap -->
     <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="{{STATIC_URL}}override.css" rel="stylesheet" media="screen">
