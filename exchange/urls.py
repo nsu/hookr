@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^(?P<network>\w+)/makehookup/$', views.make_hookup),
     url(r'^(?P<network>\w+)/buyipo/$', views.order_ipo),
     url(r'^(?P<network>\w+)/buy/$', views.order),
+    url(r'^$', views.homepage),
 )

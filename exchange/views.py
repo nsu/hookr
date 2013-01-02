@@ -50,17 +50,17 @@ def order(request, network):
             return HttpResponse('False')
     else:
         form = BuyOrderForm(network)
-        return render(request, 'formTemplate.html',{
+        return render(request, 'formTemplate.html', {
             'form': form
         })
-        
+
 @login_required
 def make_hookup(request, network):
-    network=Network.objects.get(name=network)
+    network = Network.objects.get(name=network)
     if request.method == 'POST':
         form = HookupForm(network, request.POST)
         if form.is_valid():
-            hookers=form.cleaned_data['hookers']
+            hookers = form.cleaned_data['hookers']
             try:
                 hookup = PotentialIPO.objects.get(network=network, hookers=hookers)
             except:
@@ -78,3 +78,7 @@ def make_hookup(request, network):
         return render(request, 'formTemplate.html',{
             'form': form
         })
+
+@login_required
+def homepage(request):
+    return render(request, 'home.html')

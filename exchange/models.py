@@ -19,9 +19,11 @@ class Network(models.Model):
     """
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u', blank=True, null=True)
+
     def add_user(self, user):
         self.users.add(user)
         self.save()
+
     def __unicode__(self):
         return self.name
 
@@ -241,3 +243,30 @@ class IPOOrder(BaseBuyOrder):
         else:
             raise ValidationError("IPOOrder associated with Hookup (not PotentialIPO)")
 
+class PriceDatapoint(models.Model):
+    """
+    This is the price datapoint class it represents a single datapoint
+    in the history of the price of a particular hookup.
+    """
+    hookup = models.ForeignKey(Hookup)
+    price = models.DecimalField(max_digits=8,decimal_places=2) #this sets max price to 999999.99
+    volume = models.IntegerField()
+    time = models.DateTimeField()
+    @staticmethod
+    def combine(datapoints):
+        #TODO determine how date of combined datapoint should be calculated
+        volume = 0
+        price = 0
+        hookup = datapoints[0].hookup
+        for datapoint in datapoints:
+            if datapoint.hookup != hookup:
+                #TODO raise some sort of exception here
+                return
+        #Average price is calculated per share not per sale 
+        for datapoint in datapoints:
+            volume += datapoint.volume
+            price += datapoint.price*datapoint.volume
+            datapoint.delete()
+        price /= volume
+        new_datapoint = PriceDatapoint(price=price, volume=volume, hookup=hookup)
+        new_datapoint.save()

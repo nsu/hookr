@@ -2,7 +2,7 @@
 
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
+<link rel="stylesheet" type="text/css" href="style.css">
 
 <script>
     $(document).ready(function(){
@@ -63,14 +63,12 @@
       <div id="login-box" class="login-signup-box">
         <h1>login</h1>
         <div id="form-box">
-            <form id="login_form" method="post" action="{% url django.contrib.auth.views.login %}">
-                <input id="id_username" type="text" name="username" maxlength="30" placeholder="username" />
-                <input type="password" name="password" id="id_password" placeholder="password" />
-                <button class="signup">sign-up</button>
-                <button type="submit" class="login">login</button>
-                {% csrf_token %}
-                {{form.errors}}
+            <form>
+                <input type="text" id="login" class="input" placeholder="username" />
+                <input type="password" id="password" class="input" placeholder="password" />
             </form>
+            <button class="login">login</button>
+            <button class="signup">sign-up</button>
         </div>
      </div>
 

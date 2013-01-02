@@ -1,0 +1,148 @@
+body {
+    background: #E7F3EF;
+    margin: 0;
+}
+
+#container {
+    width:100%;
+    margin-bottom: 100px;
+}
+
+#header {
+    width: 100%;
+    height: 45px;
+    background: #55C3DC;
+    font-family: Mission Script;
+    color: #E7F3EF;
+    text-shadow: 0px -1px 0px #668337;
+    font-size: 40px;
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .52);
+}
+
+#header .name {
+    float: left;
+    padding-top: 6px;
+    padding-left: 35px;
+}
+
+#header .name a{
+    text-decoration: none;
+    color: #E7F3EF;
+}
+
+/* Box in the middle of login page that contains form and h1 */
+
+.login-signup-box{
+    width: 400px;
+    height: 250px;
+    margin: 0px auto;
+    margin-top: 150px;
+    background: #55C3DC;
+    border-radius: 4px;
+}
+
+.login-signup-box h1 {
+    padding-top: 20px;
+    margin-bottom: 15px;
+    font-family: Mission Script;
+    color: #E7F3EF;
+    font-size: 70px;
+    text-align: center;
+    text-shadow: 0px -1px 0px #668337;
+}
+
+#form-box {
+    color: #E7F3EF;
+    font-family: Futura LT;
+    margin: 0px auto;
+}
+
+/* style for the text input elements */
+#form-box input[type=text], #form-box input[type=password] {
+    float: left;
+    margin: 0px auto;
+    display: block;
+    margin-bottom: 9px;
+    height: 30px;
+    width: 250px;
+
+    border-radius: 4px;
+    border: none;
+    font-family: Futura LT;
+    letter-spacing: 2px;
+    font-size: 15px;
+    padding-left: 11px;
+    padding-right: 15px;
+    text-align: center;
+    margin-left: 72px;
+}
+
+
+/* All of this is for the buttons */
+.login-signup-box button{
+    font-family: Futura LT;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #E7F3EF;
+    text-align: center;
+    text-shadow: 0px -1px 0px #668337;
+    font-size: 11px;
+
+    border: none;
+    border-radius: 4px;
+    height: 30px;
+    width: 90px;
+    padding-top: 5px;
+    padding-left: 10px;
+
+    background: #EC6C20;
+}
+
+.login-signup-box button:hover{
+    background-color: #EC6020;
+    text-shadow: 0px -1px 0px #668337;
+}
+
+.login-signup-box button:active{
+    background-color: #8C6429;
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#8C6429), to(#EC6C20));
+}
+
+.login {
+    float: right;
+    margin-right: 90px;
+    margin-top: 10px;
+}
+
+.signup {
+    float: left;
+    margin-left: 90px;
+    margin-top: 10px;
+}
+
+.create {
+    float: left;
+    margin-left: 90px;
+    margin-top: 10px;
+}
+
+.back {
+    float: right;
+    margin-right: 90px;
+    margin-top: 10px;
+}
+
+#signup-box {
+    height: 290px;
+    display: none;
+}
+
+#passwords-equal{
+    display: none;
+    float: left;
+    margin-left: 5px;
+    height: 30px;
+    width: 19px;
+    background: #E24B2C;
+    border-radius: 3px;
+}
