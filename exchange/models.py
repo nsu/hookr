@@ -5,18 +5,18 @@ from django.core.exceptions import ValidationError
 
 class HookrUser(User):
     """
-	This is the hookr user class.
-	It is bound to the django builtin User class.
-	It contains an integerfield representing the number of points a user has
-	"""
+    This is the hookr user class.
+    It is bound to the django builtin User class.
+    It contains an integerfield representing the number of points a user has
+    """
     points = models.IntegerField()
-        
+
 class Network(models.Model):
     """
-	This is the network class.
-	It represents the "networks" or "exchanges" that hookups and shares exist in.
-	It has a name (which is a charfield) and a collection of HookrUsers.
-	"""
+    This is the network class.
+    It represents the "networks" or "exchanges" that hookups and shares exist in.
+    It has a name (which is a charfield) and a collection of HookrUsers.
+    """
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(HookrUser, related_name='u', blank=True, null=True)
 
@@ -29,43 +29,45 @@ class Network(models.Model):
 
 class ClosedNetwork(models.Model):
     """
-	This is the closed network class.
-	It extends the functionality of a network to allow the creation of exclusive, "invitation only" networks
-	It has a list of HookrUsers who have been invited (but have not accepted their invitations)
-	"""
+    This is the closed network class.
+    It extends the functionality of a network to allow the creation of exclusive, "invitation only" networks
+    It has a list of HookrUsers who have been invited (but have not accepted their invitations)
+    """
     invited_users = models.ManyToManyField(HookrUser, related_name='i', blank=True, null=True)
     def invite_user(self, user):
         self.invited_users.add(user)
         self.save()
     def add_user(self, user):
         try:
-            self.invited_users.get(pk=user.id)
+            self.invited_users.get(pk=user.pk)
         except HookrUser.DoesNotExist:
             raise ValidationError("User tried to join private group uninvited")
             return
         self.invited_users.remove(user)
         self.users.add(user)
         self.save()
-        
+
 class HookrProfile(models.Model):
     """
-	This is the hookr profile class.
+    This is the hookr profile class.
     Hooker profiles belong to networks and represent people who hook up.
-	Profiles have a firstname, lastname, network, and, optionally, a hookr user association.
-	"""
+    Profiles have a firstname, lastname, network, and, optionally, a hookr user association.
+    """
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     user = models.ForeignKey(HookrUser, blank=True, null=True)
     network = models.ForeignKey(Network)
+    def get_full_name(self):
+        return '%s %s' % (self.firstname, self.lastname)
     def __unicode__(self):
-        return self.firstname+' '+self.lastname
+        return '%s %s(%s)' % (self.firstname, self.lastname, self.network.name)
 
 class Hookup(models.Model):
     """
-	This is the hookup class.
+    This is the hookup class.
     Hookups exist in the context of a particular network and are associated with Shares
-	Hookups are associated with exactly two hookr profiles and one network
-	"""
+    Hookups are associated with exactly two hookr profiles and one network
+    """
     DEFAULT_DIVIDEND = 1000
     hookers = models.ManyToManyField(HookrProfile)
     network = models.ForeignKey(Network)
@@ -77,20 +79,17 @@ class Hookup(models.Model):
         else:
             raise ValidationError("There must be two hookers in a hookup")
         return
-    
+
     def __unicode__(self):
-        mystr=''
-        for hooker in self.hookers.all():
-            mystr=mystr+hooker.__unicode__()
-        return mystr+'('+self.network.__unicode__()+')'
-    
+        return '%s/%s(%s)' % (self.hookers.all()[0].get_full_name(), self.hookers.all()[1].get_full_name(),self.network)
+
 class PotentialIPO(Hookup):
     """
-	This is the potential ipo class.
+    This is the potential ipo class.
     Potential IPOs are hookups that are not yet associated with shares
-	Potential IPOs have a number of requests for shares of their hookup
-	and default information associated with IPOs (namely, volume and pricing)
-	"""
+    Potential IPOs have a number of requests for shares of their hookup
+    and default information associated with IPOs (namely, volume and pricing)
+    """
     DEFAULT_VOLUME = 150
     DEFAULT_PRICE = 100
     num_requests = models.IntegerField(default=0)
@@ -122,14 +121,16 @@ class PotentialIPO(Hookup):
             return
         self.save()
         return
-        
+    def __unicode__(self):
+        return '%s+%s' % (super(PotentialIPO, self).__unicode__(), self.num_requests)
+
 class ShareGroup(models.Model):
     """
-	This is the share group class.
+    This is the share group class.
     Share Groups are information about the purchases of a particular user
-	Share Groups have a volume (the number of shares), a hookup, and an owner
-	Two share groups should never have the same owner and hookup at the same time
-	"""
+    Share Groups have a volume (the number of shares), a hookup, and an owner
+    Two share groups should never have the same owner and hookup at the same time
+    """
     volume = models.IntegerField()
     hookup = models.ForeignKey(Hookup)
     owner = models.ForeignKey(HookrUser)
@@ -144,30 +145,28 @@ class ShareGroup(models.Model):
     def add_shares(self, volume):
         self.volume += volume
         self.save()
-    def save(self, is_first=False, *args, **kwargs):
-        #Verify that this is the only sharegroup belonging to this user for this hookup, if not just add this volume to the other one
-        #if(is_first):
-        #    super(ShareGroup, self).save(*args, **kwargs)
-        #    return
+    def save(self, *args, **kwargs):
         try:
             other = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
             if other!=self:
                 other.volume+=self.volume
-                other.save(is_first=True)
+                other.save()
                 return
         except ShareGroup.DoesNotExist:
             pass
         super(ShareGroup, self).save(*args, **kwargs)
-                
+    def __unicode__(self):
+        return '%s<-%s(%s)' % (self.hookup, self.owner, self.volume)
+
 class Order(models.Model):
     """
-	This is the Order class.
+    This is the Order class.
     Orders are information about transactions involving share groups
-	Orders are an abstract type extended by all actions that can be a performed by
-	a user involving shares
-	Orders have an associated hookup, price, and volume. They aditionally have
-	DateTimeFields for when they were created and, optionally, when they expire
-	"""
+    Orders are an abstract type extended by all actions that can be a performed by
+    a user involving shares
+    Orders have an associated hookup, price, and volume. They aditionally have
+    DateTimeFields for when they were created and, optionally, when they expire
+    """
     hookup = models.ForeignKey(Hookup)
     owner = models.ForeignKey(HookrUser)
     price = models.IntegerField()
@@ -181,13 +180,13 @@ class Order(models.Model):
         get_latest_by = 'create_time'
         ordering = ['create_time']
     def __unicode__(self):
-        return self.hookup.__unicode__()+'('+self.owner.__unicode__()+')'
-        
+        return '%s<-%s@%s' % (self.hookup, self.owner, self.create_time)
+
 class SellOrder(Order):
     """
-	This is the sell order class.
+    This is the sell order class.
     it contains validation necessary for selling shares
-	"""
+    """
     def save(self, *args, **kwargs):
         shares = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
         other_orders = SellOrder.objects.filter(hookup=self.hookup, owner=self.owner)
@@ -198,14 +197,14 @@ class SellOrder(Order):
         if((shares.volume-reserved)<self.volume):
             raise ValidationError("User does not have enough shares for sell order")
         super(SellOrder, self).save(*args, **kwargs)
-    
+
 class BaseBuyOrder(Order):
     """
-	This is the base class for buy orders.
+    This is the base class for buy orders.
     It is an abstract class. It contains validation necessary
     for buying shares and also ensures that a user's points
     are reserved unless the order is cancelled.
-	"""
+    """
     def reserve_funds(self):
         self.owner.points -= self.price*self.volume
         self.owner.save()
@@ -243,3 +242,4 @@ class IPOOrder(BaseBuyOrder):
             ipo.save()
         else:
             raise ValidationError("IPOOrder associated with Hookup (not PotentialIPO)")
+
