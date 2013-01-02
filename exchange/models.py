@@ -249,7 +249,7 @@ class PriceDatapoint(models.Model):
     in the history of the price of a particular hookup.
     """
     hookup = models.ForeignKey(Hookup)
-    price = models.DecimalField(decimal_places=2)
+    price = models.DecimalField(max_digits=8,decimal_places=2) #this sets max price to 999999.99
     volume = models.IntegerField()
     time = models.DateTimeField()
     @staticmethod
