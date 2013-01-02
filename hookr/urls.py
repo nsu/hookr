@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login',
     {'template_name': 'login.html'}),
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login'),
+    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 )
