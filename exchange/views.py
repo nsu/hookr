@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 def join_network(request, network):
     network.add_user(request.user)
     return HTTPResponse("Added User")
-    
+
 @login_required
 def order_ipo(request, network):
     network=Network.objects.get(name=network)
@@ -81,4 +81,5 @@ def make_hookup(request, network):
 
 @login_required
 def homepage(request):
-    return render(request, 'home.html')
+
+    return render(request, 'home.html', makeContext(user))

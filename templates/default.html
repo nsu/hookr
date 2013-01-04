@@ -16,6 +16,18 @@
     <div class="navbar-inner">
       <a class="brand" href="#">hookr</a>
     
+    <div class="btn-group pull-left" style="margin-top: 7px; margin-left: 5px; margin-right:15px">
+      <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-envelope icon-white"></i> </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url django.contrib.auth.views.logout_then_login %}"><i class="icon-user"></i> Logout</a></li>
+        <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
+        <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+        <li><a href="#"><i class="icon-ban-circle"></i> Ban</a></li>
+        <li class="divider"></li>
+        <li><a href="#"><i class="i"></i> Make admin</a></li>
+      </ul>
+    </div>
+
     <ul class="nav nav-pills">
       <li class="active">
         <a href="#">Home</a>
@@ -24,6 +36,17 @@
       <li><a href="#">Hookups</a></li>
     </ul>
 
+
+      <div class="standard-box pull-left points-box-top" style="">
+      <div style="float:left; padding-right: 10px; border-right: 1px solid #DDD;">
+        <i class="icon-folder-open" style="padding-right: 10px;"> </i>
+        0000 pts
+      </div>
+      <div style="float:left; padding-left: 10px">
+        <span style="font-weight: 600; padding-right: 5px">$</span>
+        0000 pts
+      </div>
+      </div>
 
   <div class="pull-right">
     <form class="navbar-search", style="margin-top: 7px; margin-right: 10px">
@@ -45,11 +68,10 @@
     </div>
     </div>
 
-<div class="container>"
+
 
     {% block content %}
     {% endblock %}
 
-</div>
   </body>
 </html>
