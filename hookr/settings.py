@@ -75,6 +75,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'dajaxice.finders.DajaxiceFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -85,7 +86,7 @@ SECRET_KEY = 'u+!zosr(+bq^qmxu^*hd!-4grxs_5&amp;x#x92r8z!2k#$gfsjhbp'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -121,7 +122,19 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'dajaxice',
     'exchange',
+)
+
+#This was copied out of dajaxice docs. It may have unnecessary things.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages'
 )
 
 LOGIN_REDIRECT_URL = '/'
