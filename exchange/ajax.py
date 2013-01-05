@@ -34,4 +34,21 @@ def place_sell_order(request, volume, price, hookup_pk):
     except ShareGroup.DoesNotExist, SellOrder.ValidationError:
         #User doesn't seem to own enough of these...
         return False
-    
+
+@dajaxice_register
+def place_buy_order(request, volume, price, hookup_pk):
+    hookup = Hookup.objects.get(pk=hookup_pk)
+    user = HookrUser.objects.get(id=request.user.id)
+    #TODO figure out what response objects to use
+    try:
+        order = BuyOrder(owner=request.user, volume=volume, price=price)
+        order.save()
+        sellers = BuyOrder.objects.get(hookup=hookup)
+        for sell_order in sellers:
+            match_orders(order, sell_order)
+            #if the order is empty it will delete itself
+            if order is None:
+                break
+    except BuyOrder.ValidationError:
+        #User doesn't seem to own have enough points...
+        return False
