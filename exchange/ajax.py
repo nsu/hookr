@@ -28,7 +28,9 @@ def place_sell_order(request, volume, price, hookup_pk):
         buyers = BuyOrder.objects.get(hookup=hookup)
         for buy_order in buyers:
             match_orders(buy_order, order)
-                
+            #if the order is empty it will delete itself
+            if order is None:
+                break
     except ShareGroup.DoesNotExist, SellOrder.ValidationError:
         #User doesn't seem to own enough of these...
         return False
