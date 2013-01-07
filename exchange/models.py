@@ -146,6 +146,9 @@ class ShareGroup(models.Model):
         self.volume += volume
         self.save()
     def save(self, *args, **kwargs):
+        if self.volume==0:
+            self.delete()
+            return
         try:
             other = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
             if other!=self:
@@ -179,6 +182,11 @@ class Order(models.Model):
         abstract = True
         get_latest_by = 'create_time'
         ordering = ['create_time']
+    def save(self, *args, **kwargs):
+        if self.volume == 0:
+            self.delete()
+        else:
+            super(Order, self).save(*args, **kwargs)
     def __unicode__(self):
         return '%s<-%s@%s' % (self.hookup, self.owner, self.create_time)
 
