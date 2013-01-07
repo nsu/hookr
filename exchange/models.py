@@ -9,7 +9,7 @@ class HookrUser(User):
     It is bound to the django builtin User class.
     It contains an integerfield representing the number of points a user has
     """
-    points = models.IntegerField()
+    points = models.IntegerField(default=0)
 
 class Network(models.Model):
     """
@@ -81,7 +81,7 @@ class Hookup(models.Model):
         return
 
     def __unicode__(self):
-        return '%s/%s(%s)' % (self.hookers.all()[0].get_full_name(), self.hookers.all()[1].get_full_name(),self.network)
+        return '%s/%s(%s)' % (self.hookers.all()[0].get_full_name(), self.hookers.all()[1].get_full_name(), self.network)
 
 class PotentialIPO(Hookup):
     """
