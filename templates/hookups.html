@@ -1,0 +1,63 @@
+{% extends "default.html" %}
+
+{% block head %}
+<title>Hookr | Hookups</title>
+
+{% endblock %}
+
+{% block nav %}
+    <ul class="nav nav-pills">
+        <li><a href="/">Home</a></li>
+        <li><a href="#">Networks</a></li>
+        <li class="active">
+            <a href="hookups">Hookups</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="span3 left-panel">
+        <ul>
+             <li class="standard-box">
+              <div class="top-bar">
+                University of Rochester
+              </div>
+              </li>
+        </ul>
+    </div>
+
+    <div class="span6 main-content">
+        <div class="userpanel standard-box">
+            <div style="text-align: center">
+                <div class="row">
+                    <div class="span3 buysell">
+                        test
+                    </div>
+
+                    <div class="span3 buysell">
+                        test
+                    </div>
+                </div>
+
+            <a class="btn buysell" href="#">buy</a>
+            <span style="margin:120px"></span>
+            <a class="btn buysell" href="#">sell</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="span2 left-panel">
+        <ul>
+             <li class="standard-box">
+              <div class="top-bar">
+                University of Rochester
+              </div>
+              </li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -10,6 +10,6 @@ from exchange.models import HookrUser
 def default_hookr_context(request):
     context = {}
 
-    portfolio = request.user.sharegroup_set.all()
-    print portfolio
+    if request.user.is_authenticated():
+        portfolio = request.user.sharegroup_set.all()
     return context
