@@ -42,7 +42,6 @@ def place_sell_order(request, volume, price, hookup_pk):
 @dajaxice_register
 def place_buy_order(request, volume, price, hookup_pk):
     hookup = Hookup.objects.get(pk=hookup_pk)
-    user = HookrUser.objects.get(id=request.user.id)
     try:
         order = BuyOrder(owner=request.user, volume=volume, price=price)
         order.save()
@@ -60,6 +59,23 @@ def place_buy_order(request, volume, price, hookup_pk):
         error = AjaxError("You do not have enough points to place this order.")
         return error.to_json()
 
+@dajaxice_register
+def get_price_inquiry(request, volume, hookup_pk):
+    hookup = Hookup.objects.get(pk=hookup.pk)
+    orders = SellOrder.objects.order_by('price')
+    cost = 0
+    for order in orders:
+        if order.volume > volume:
+            volume = 0
+            cost += volume*order.price
+        else:
+            volume -= order.volume
+            cost += order.volume*order.price
+        if volume == 0:
+            return cost
+    error = AjaxError("Not enough shares are for sale")
+    return error.to_json()
+    
 class AjaxError(Object):
     def __init__(self, message):
         self.message=message
