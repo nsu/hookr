@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from exchange.models import *
 from exchange.helpers import match_orders
+from django.db.models import Q
 from exchange.serializers import *
 @dajaxice_register
 def sayhello(request):
@@ -75,6 +76,13 @@ def get_price_inquiry(request, volume, hookup_pk):
             return cost
     error = AjaxError("Not enough shares are for sale")
     return error.to_json()
+    
+@dajaxice_register
+def profile_search(request, name):
+    networks = request.user.u.all()
+    names = HookrProfile.objects.filter(Q(firstname__icontains=name)|Q(lastname__icontains=name),Q(network__in=networks))
+    serializer = JSONSerializer()
+    data = serializer.serialize(names, relations='network')
     
 class AjaxError(object):
     def __init__(self, message):
