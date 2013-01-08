@@ -54,7 +54,7 @@
 .navbar .nav > li > a {
     padding-top: 13px;
     color: #E7F3EF;
-    text-shadow: 0px 1px 0px rgba(0, 0, 0, .52);
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, .22);
     letter-spacing: 3px;
     font-size: 12px;
     text-transform: uppercase;
@@ -63,13 +63,13 @@
 
 .navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
     color: #f3e7eb;
-    text-shadow: 0px 1px 0px rgba(0, 0, 0, .52);
-}   
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, .22);
+}
 
 .navbar .nav > li > a:active {
     color: #f3e7eb;
-    text-shadow: 0px -1px 0px rgba(0, 0, 0, .52);
-}   
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, .22);
+}
 
 .standard-box {
     margin-bottom: 10px;
@@ -139,20 +139,20 @@
 }
 
 .stock-up {
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    
+
     border-bottom: 20px solid rgba(236, 108, 32, .75);
 }
 
 .stock-down {
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    
+
     border-top: 20px solid #3F96F3;
 }
 
@@ -167,7 +167,7 @@
 
 .points .point-count {
     font-weight: bold;
-    margin-top:10px; 
+    margin-top:10px;
     font-family: Futura LT
 }
 
@@ -177,9 +177,9 @@
 
 .description p {
     text-align: center;
-    font-family: Futura LT; 
+    font-family: Futura LT;
     text-transform: uppercase;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     margin-top: 2px;
 }
 
@@ -230,7 +230,7 @@
 }
 
 .trending-points {
-    text-align: center; 
+    text-align: center;
     margin-bottom: 2px;
 }
 
@@ -245,10 +245,31 @@
 
 .navbar .btn-group .btn {
     font-size: 12px;
+    width: 12px;
 }
 
 .navbar-inner .dropdown-menu li > a {
     text-shadow: none;
+}
+
+.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
+    color: #E7F3EF;
+}
+
+.main-content .userpanel.standard-box {
+    width: 572px;
+}
+
+.btn.buysell {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    /*height: 30px;*/
+    /*padding-top: 20px;*/
+    /*padding-bottom: 5px;*/
+    font-size: 20px;
+    /*font-family: Mission Script;*/
+    /*text-transform: none;*/
+    letter-spacing: 1px;
 }
 
 /*D3 styling*/
