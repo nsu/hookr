@@ -81,4 +81,4 @@ def make_hookup(request, network):
         
 @login_required
 def homepage(request):
-    return render(request, 'home.html', makeContext(user))
+    return render(request, 'home.html')

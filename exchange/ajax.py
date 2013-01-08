@@ -76,7 +76,7 @@ def get_price_inquiry(request, volume, hookup_pk):
     error = AjaxError("Not enough shares are for sale")
     return error.to_json()
     
-class AjaxError(Object):
+class AjaxError(object):
     def __init__(self, message):
         self.message=message
     
