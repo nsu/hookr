@@ -1,31 +1,55 @@
 {% extends "default.html" %}
 
+{% block head %}
+
+<script type="text/javascript">
+// This function graps "my hookups" and displays them at the top of the list
+    $(function(){
+        hookups = []
+        hookups.push({pk:1, model:"exchange.hookup", fields:{hookers:["Lou Fogel", "Kay Holland"], network:"ARHS", points: -192}})
+        hookups.push({pk:1, model:"exchange.hookup", fields:{hookers:["Ben Blier", "Yamaha PM5-D"], network:"Dartmouth", points: -192}})
+        hookups.push({pk:1, model:"exchange.hookup", fields:{hookers:["Austin Federa", "Liam Neeson"], network:"Hollywood", points: +150}})
+
+        new_hookups = [];
+
+        $(hookups).each(function(i) {
+            var hookup = $(this)[0];
+            result = $('<li class="standard-box"></li>');
+            result.hide()
+            result.load('static/new_hookup.html', function() {
+                $(this).children(".top-bar").html(hookup.fields.network);
+
+                if (hookup.fields.points > 0) {
+                    $(this).find(".points").prepend('<div class="stock-up"> </div>')
+                    $(this).find(".point-count").html("+"+hookup.fields.points);
+                } else {
+                    $(this).find(".points").prepend('<div class="stock-down"> </div>')
+                    $(this).find(".point-count").html(hookup.fields.points);
+                }
+
+                
+                $(this).find(".description").html("<p>"+hookup.fields.hookers[0]+"</p><p>"+hookup.fields.hookers[1]+"</p>")
+
+                $(".left-panel ul").prepend(this);
+
+                $(this).delay(800*i).fadeIn("medium")
+
+            });
+        });
+
+    });
+</script>
+
+{% endblock %}
+
 {% block content %}
 
     <div class="row">
       <div class="span3 left-panel">
           <h1>MY HOOKUPS</h1>
           <ul>
-            <li class="standard-box">
 
-              <div class="top-bar">
-                Amherst, MA
-              </div>
-
-              <div class="standard-container">
-                <div class="points">
-                  <div class="stock-up"></div>
-                  <div class="point-count">+192</div>
-                </div>
-                <div class="description">
-                  <p>Alex Karpinski</p>
-                  <p>Darcy Bird</p>
-                </div>
-              </div>
-
-            </li>
-
-            <li class="standard-box">
+<!--             <li class="standard-box">
 
               <div class="top-bar">
                 University of Rochester
@@ -38,22 +62,6 @@
               <div class="description">
                 <p>Austin Federa</p>
                 <p>Lou Fogel</p>
-              </div>
-            </li>
-
-            <li class="standard-box">
-
-              <div class="top-bar">
-                Amherst, MA
-              </div>
-
-              <div class="points">
-                <div class="stock-up"></div>
-                <div class="point-count">+391</div>
-              </div>
-              <div class="description">
-                <p>Ben Blier</p>
-                <p>Yamaha PM5-D</p>
               </div>
             </li>
 
@@ -109,11 +117,12 @@
                 <p>Austin Federa</p>
                 <p>Lou Fogel</p>
               </div>
-            </li>
+            </li> -->
           </ul>
       </div>
 
       <div class="span7 main-content">
+
             <script src="{{STATIC_URL}}main-graph.js"></script>
             <ul class="news-list">
               <li class="standard-box">
