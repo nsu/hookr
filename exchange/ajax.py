@@ -3,7 +3,7 @@ from dajaxice.decorators import dajaxice_register
 from django.http import HttpResponse
 from django.core import serializers
 from exchange.models import *
-from exchange.views import match_orders
+from exchange.helpers import match_orders
 from exchange.serializers import *
 @dajaxice_register
 def sayhello(request):
