@@ -13,42 +13,56 @@ def sayhello(request):
 def get_my_hookups(request):
     my_shares = ShareGroup.objects.filter(owner=request.user)
     hookups = [share.hookup for share in my_shares]
-    ser=JSONSerializer()
-    data = ser.serialize(hookups, relations='hookers, network')
+    serializer=JSONSerializer()
+    data = serializer.serialize(hookups, relations='hookers, network')
     return data
     
 @dajaxice_register
 def place_sell_order(request, volume, price, hookup_pk):
     hookup = Hookup.objects.get(pk=hookup_pk)
-    #TODO figure out what response objects to use
     try:
         ShareGroup.objects.get(owner=request.user)
         order = SellOrder(owner=request.user, volume=volume, price=price)
         order.save()
+        serializer=JSONSerializer()
         buyers = BuyOrder.objects.get(hookup=hookup)
         for buy_order in buyers:
             match_orders(buy_order, order)
-            #if the order is empty it will delete itself
+            #if the order is empty it will delete itself and return nothing
             if order is None:
-                break
+                return None
+        order = SellOrder.objects.get(id=order.id)
+        #return the order to the user
+        return serializer.serialize(order)
     except ShareGroup.DoesNotExist, SellOrder.ValidationError:
         #User doesn't seem to own enough of these...
-        return False
+        error = AjaxError("You cannot sell shares that you do not own.")
+        return error.to_json()
 
 @dajaxice_register
 def place_buy_order(request, volume, price, hookup_pk):
     hookup = Hookup.objects.get(pk=hookup_pk)
     user = HookrUser.objects.get(id=request.user.id)
-    #TODO figure out what response objects to use
     try:
         order = BuyOrder(owner=request.user, volume=volume, price=price)
         order.save()
         sellers = BuyOrder.objects.get(hookup=hookup)
         for sell_order in sellers:
             match_orders(order, sell_order)
-            #if the order is empty it will delete itself
+            #if the order is empty it will delete itself and return nothing
             if order is None:
-                break
+                return None
+        order = BuyOrder.objects.get(id=order.id)
+        #return the order to the user
+        return serializer.serialize(order)
     except BuyOrder.ValidationError:
         #User doesn't seem to own have enough points...
-        return False
+        error = AjaxError("You do not have enough points to place this order.")
+        return error.to_json()
+
+class AjaxError(Object):
+    def __init__(self, message):
+        self.message=message
+    
+    def to_json(self):
+        return "{'type':'error','message':'%s'}" % (self.message)
