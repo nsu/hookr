@@ -2,7 +2,7 @@
 {% load dajaxice_templatetags %}
 <html>
   <head>
-    <title>Bootstrap 101 Template</title>
+    <title>Hookr | Home</title>
     {% dajaxice_js_import %}
     <!-- Bootstrap -->
     <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -40,13 +40,8 @@
 
 
       <div class="standard-box pull-left points-box-top" style="">
-      <div style="float:left; padding-right: 10px; border-right: 1px solid #DDD;">
-        <i class="icon-folder-open" style="padding-right: 10px;"> </i>
-        0000 pts
-      </div>
-      <div style="float:left; padding-left: 10px">
-        <span style="font-weight: 600; padding-right: 5px">$</span>
-        0000 pts
+      <div style="float:left;">
+        {{request.user.points}} pts
       </div>
       </div>
 

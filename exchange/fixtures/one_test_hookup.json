@@ -1,0 +1,71 @@
+[
+    {
+        "pk": 2, 
+        "model": "exchange.hookruser", 
+        "fields": {
+            "user_permissions": [], 
+            "points": 1805, 
+            "groups": []
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "exchange.hookruser", 
+        "fields": {
+            "user_permissions": [], 
+            "points": 0, 
+            "groups": []
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "exchange.hookruser", 
+        "fields": {
+            "user_permissions": [], 
+            "points": 0, 
+            "groups": []
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "exchange.network", 
+        "fields": {
+            "name": "test-network", 
+            "users": [
+                3, 
+                4
+            ]
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "exchange.hookrprofile", 
+        "fields": {
+            "lastname": "One", 
+            "user": 3, 
+            "firstname": "Test", 
+            "network": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "exchange.hookrprofile", 
+        "fields": {
+            "lastname": "Two", 
+            "user": 4, 
+            "firstname": "Test", 
+            "network": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "exchange.hookup", 
+        "fields": {
+            "hookers": [
+                1, 
+                2
+            ], 
+            "network": 1
+        }
+    }
+]
