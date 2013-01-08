@@ -1,3 +1,20 @@
+@font-face {
+    font-family: Futura LT;
+    src: url('/static/FuturaLT.ttf');
+}
+
+h2 {
+    font-family: Futura LT;
+    font-size: 40px;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-family: Futura LT;
+    letter-spacing: 2px;
+    color: rgba(0, 0, 0, .52);
+    text-shadow: 0px -1px 0px rgba(255, 255, 255, .52);
+}
+
 .navbar-inner {
     background: none;
     height: 45px;
@@ -256,9 +273,10 @@
     color: #E7F3EF;
 }
 
-.main-content .userpanel.standard-box {
+/*.main-content .userpanel.standard-box {
+    padding-top: 10px;
     width: 572px;
-}
+}*/
 
 .btn.buysell {
     margin-top: 20px;
