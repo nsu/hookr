@@ -8,7 +8,7 @@ from exchange.serializers import *
 @dajaxice_register
 def sayhello(request):
     return simplejson.dumps({'message':'Hello World'})
-    
+
 @dajaxice_register(method='GET')
 def get_my_hookups(request):
     my_shares = ShareGroup.objects.filter(owner=request.user)
@@ -16,7 +16,7 @@ def get_my_hookups(request):
     serializer=JSONSerializer()
     data = serializer.serialize(hookups, relations='hookers, network')
     return data
-    
+
 @dajaxice_register
 def place_sell_order(request, volume, price, hookup_pk):
     hookup = Hookup.objects.get(pk=hookup_pk)
@@ -76,7 +76,7 @@ def get_price_inquiry(request, volume, hookup_pk):
     error = AjaxError("Not enough shares are for sale")
     return error.to_json()
     
-class AjaxError(Object):
+class AjaxError(object):
     def __init__(self, message):
         self.message=message
     

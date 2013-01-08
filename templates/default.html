@@ -2,7 +2,6 @@
 {% load dajaxice_templatetags %}
 <html>
   <head>
-    <title>Hookr | Home</title>
     {% dajaxice_js_import %}
     <!-- Bootstrap -->
     <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -17,8 +16,8 @@
     <div class="navbar">
     <div class="navbar-inner">
       <a class="brand" href="#">hookr</a>
-    
-    <div class="btn-group pull-left" style="margin-top: 7px; margin-left: 5px; margin-right:15px">
+
+    <div class="btn-group pull-left" style="margin-top: 7px; margin-left: 5px; margin-right:15px;">
       <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-envelope icon-white"></i> </a>
       <ul class="dropdown-menu">
         <li><a href="{% url django.contrib.auth.views.logout_then_login %}"><i class="icon-user"></i> Logout</a></li>
@@ -30,13 +29,10 @@
       </ul>
     </div>
 
-    <ul class="nav nav-pills">
-      <li class="active">
-        <a href="#">Home</a>
-      </li>
-      <li><a href="#">Networks</a></li>
-      <li><a href="#">Hookups</a></li>
-    </ul>
+
+    {% block nav %}
+
+    {% endblock %}
 
 
       <div class="standard-box pull-left points-box-top" style="">
