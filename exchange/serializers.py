@@ -79,7 +79,10 @@ class Serializer(shit.Serializer):
         Recursively serializes relations specified in the 'relations' option.
         """
         fname = field.name
-        related = getattr(obj, fname)
+        try:
+            related = getattr(obj, fname)
+        except:
+            related = None
         if related is not None:
             if fname in self.relations:
                 # perform full serialization of FK

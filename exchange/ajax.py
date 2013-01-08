@@ -78,11 +78,12 @@ def get_price_inquiry(request, volume, hookup_pk):
     return error.to_json()
     
 @dajaxice_register
-def profile_search(request, name):
+def profile_search(request, name=None):
     networks = request.user.u.all()
     names = HookrProfile.objects.filter(Q(firstname__icontains=name)|Q(lastname__icontains=name),Q(network__in=networks))
     serializer = JSONSerializer()
     data = serializer.serialize(names, relations='network')
+    return data
     
 class AjaxError(object):
     def __init__(self, message):
