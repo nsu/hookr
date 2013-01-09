@@ -4,8 +4,6 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 admin.autodiscover()
-from dajaxice.core import dajaxice_autodiscover, dajaxice_config
-dajaxice_autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
@@ -19,5 +17,4 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login',
     {'template_name': 'login.html'}),
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login'),
-    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 )

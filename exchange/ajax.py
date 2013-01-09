@@ -6,6 +6,7 @@ from exchange.models import *
 from exchange.helpers import match_orders
 from django.db.models import Q
 from exchange.serializers import *
+
 @dajaxice_register
 def sayhello(request):
     return simplejson.dumps({'message':'Hello World'})
@@ -84,7 +85,20 @@ def profile_search(request, name=None):
     serializer = JSONSerializer()
     data = serializer.serialize(names, relations='network')
     return data
-    
+
+@dajaxice_register
+def get_hookup_from_profiles(request, profile1pk, profile2pk):
+    profile_pks = {profile1pk, profile2pk}
+    profiles = HookrProfile.objects.filter(pk__in=profiles)
+    try:
+        hookup = Hookup.objects.get(profile__in=profiles)
+        serializer=JSONSerializer()
+        data = serializer.serialize(hookup, relations='hookers, network')
+    except Hookup.DoesNotExist:
+        error = AjaxError("A hookup with specified profiles does not exist.")
+        data = error.to_json()
+    return data
+
 class AjaxError(object):
     def __init__(self, message):
         self.message=message
