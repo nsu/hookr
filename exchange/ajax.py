@@ -89,12 +89,13 @@ def profile_search(request, name=None):
 @dajaxice_register
 def get_hookup_from_profiles(request, profile1pk, profile2pk):
     profile_pks = {profile1pk, profile2pk}
-    profiles = HookrProfile.objects.filter(pk__in=profiles)
-    try:
-        hookup = Hookup.objects.get(profile__in=profiles)
+    profiles = HookrProfile.objects.filter(pk__in=profile_pks)
+    #need a queryset for serialization
+    hookup = Hookup.objects.filter(hookers=profiles)
+    if(len(hookup)==1):
         serializer=JSONSerializer()
         data = serializer.serialize(hookup, relations='hookers, network')
-    except Hookup.DoesNotExist:
+    else:
         error = AjaxError("A hookup with specified profiles does not exist.")
         data = error.to_json()
     return data
