@@ -21,42 +21,47 @@ def get_my_hookups(request):
 
 @dajaxice_register
 def place_sell_order(request, volume, price, hookup_pk):
+    volume = int(volume)
+    price = int(price)
     hookup = Hookup.objects.get(pk=hookup_pk)
     try:
         ShareGroup.objects.get(owner=request.user)
-        order = SellOrder(owner=request.user, volume=volume, price=price)
+        order = SellOrder(owner=request.user, volume=volume, price=price, hookup=hookup)
         order.save()
         serializer=JSONSerializer()
-        buyers = BuyOrder.objects.get(hookup=hookup)
+        buyers = BuyOrder.objects.filter(hookup=hookup)
         for buy_order in buyers:
             match_orders(buy_order, order)
             #if the order is empty it will delete itself and return nothing
             if order is None:
                 return None
-        order = SellOrder.objects.get(id=order.id)
+        order = SellOrder.objects.filter(id=order.id)
         #return the order to the user
         return serializer.serialize(order)
-    except ShareGroup.DoesNotExist, SellOrder.ValidationError:
+    except ShareGroup.DoesNotExist, ValidationError:
         #User doesn't seem to own enough of these...
         error = AjaxError("You cannot sell shares that you do not own.")
         return error.to_json()
 
 @dajaxice_register
 def place_buy_order(request, volume, price, hookup_pk):
+    volume = int(volume)
+    price = int(price)
     hookup = Hookup.objects.get(pk=hookup_pk)
     try:
-        order = BuyOrder(owner=request.user, volume=volume, price=price)
+        order = BuyOrder(owner=request.user, volume=volume, price=price, hookup=hookup)
         order.save()
-        sellers = BuyOrder.objects.get(hookup=hookup)
+        serializer=JSONSerializer()
+        sellers = BuyOrder.objects.filter(hookup=hookup)
         for sell_order in sellers:
             match_orders(order, sell_order)
             #if the order is empty it will delete itself and return nothing
             if order is None:
                 return None
-        order = BuyOrder.objects.get(id=order.id)
+        order = BuyOrder.objects.filter(id=order.id)
         #return the order to the user
         return serializer.serialize(order)
-    except BuyOrder.ValidationError:
+    except ValidationError:
         #User doesn't seem to own have enough points...
         error = AjaxError("You do not have enough points to place this order.")
         return error.to_json()
