@@ -63,13 +63,14 @@ def place_buy_order(request, volume, price, hookup_pk):
 
 @dajaxice_register
 def get_price_inquiry(request, volume, hookup_pk):
-    hookup = Hookup.objects.get(pk=hookup.pk)
-    orders = SellOrder.objects.order_by('price')
+    volume = int(volume)
+    hookup = Hookup.objects.get(pk=hookup_pk)
+    orders = SellOrder.objects.filter(hookup=hookup).order_by('price')
     cost = 0
     for order in orders:
-        if order.volume > volume:
-            volume = 0
+        if order.volume >= volume:
             cost += volume*order.price
+            volume = 0
         else:
             volume -= order.volume
             cost += order.volume*order.price
