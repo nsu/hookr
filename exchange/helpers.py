@@ -1,4 +1,4 @@
-from exchange.models import BuyOrder, SellOrder, HookrUser
+from exchange.models import BuyOrder, SellOrder, HookrUser, ShareGroup, PriceDatapoint
 from datetime import datetime
 
 def match_orders(buy_order, sell_order):
@@ -8,7 +8,7 @@ def match_orders(buy_order, sell_order):
     if buy_order.hookup != hookup:
         return
     #if the buyer is willing to pay the seller's price
-    if buy_order.price>sell_order.price:
+    if buy_order.price>=sell_order.price:
         price = sell_order.price
         #determine limiting factor for volume
         if buy_order.volume>sell_order.volume:

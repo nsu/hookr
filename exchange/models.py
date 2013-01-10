@@ -147,7 +147,8 @@ class ShareGroup(models.Model):
         self.save()
     def save(self, *args, **kwargs):
         if self.volume==0:
-            self.delete()
+            if self.pk is not None:
+                self.delete()
             return
         try:
             other = ShareGroup.objects.get(hookup=self.hookup, owner=self.owner)
@@ -177,14 +178,16 @@ class Order(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField(blank=True, null=True)
     def cancel(self):
-        self.delete()
+        if self.pk is not None:
+                self.delete()
     class Meta:
         abstract = True
         get_latest_by = 'create_time'
         ordering = ['create_time']
     def save(self, *args, **kwargs):
         if self.volume == 0:
-            self.delete()
+            if self.pk is not None:
+                self.delete()
         else:
             super(Order, self).save(*args, **kwargs)
     def __unicode__(self):
