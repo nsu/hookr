@@ -106,6 +106,14 @@ def get_hookup_from_profiles(request, profile1pk, profile2pk):
         data = error.to_json()
     return data
 
+@dajaxice_register
+def get_hookup_datapoints(request, hookup_pk):
+    hookup = Hookup.objects.get(pk=hookup_pk)
+    points = PriceDatapoint.objects.filter(hookup=hookup)
+    serializer = JSONSerializer()
+    data = serializer.serialize(points)
+    return data
+    
 class AjaxError(object):
     def __init__(self, message):
         self.message=message

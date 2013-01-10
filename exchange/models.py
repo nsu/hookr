@@ -263,6 +263,9 @@ class PriceDatapoint(models.Model):
     price = models.DecimalField(max_digits=8,decimal_places=2) #this sets max price to 999999.99
     volume = models.IntegerField()
     time = models.DateTimeField()
+    class Meta:
+        get_latest_by = 'time'
+        ordering = ['time']
     @staticmethod
     def combine(datapoints):
         #TODO determine how date of combined datapoint should be calculated
