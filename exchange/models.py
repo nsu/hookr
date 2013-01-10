@@ -79,7 +79,8 @@ class Hookup(models.Model):
         else:
             raise ValidationError("There must be two hookers in a hookup")
         return
-
+    def get_latest_price(self):
+        return PriceDatapoint.objects.filter(hookup=self).latest().price
     def __unicode__(self):
         return '%s/%s(%s)' % (self.hookers.all()[0].get_full_name(), self.hookers.all()[1].get_full_name(), self.network)
 
@@ -145,6 +146,8 @@ class ShareGroup(models.Model):
     def add_shares(self, volume):
         self.volume += volume
         self.save()
+    def get_worth(self):
+        return self.hookup.get_latest_price()*self.volume
     def save(self, *args, **kwargs):
         if self.volume==0:
             if self.pk is not None:

@@ -20,6 +20,14 @@ def get_my_hookups(request):
     return data
 
 @dajaxice_register
+def get_my_portfolio_value(request):
+    my_shares = ShareGroup.objects.filter(owner=request.user)
+    total = 0
+    for group in my_shares:
+        total += group.get_worth()
+    return total
+
+@dajaxice_register
 def place_sell_order(request, volume, price, hookup_pk):
     volume = int(volume)
     price = int(price)
