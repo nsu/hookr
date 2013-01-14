@@ -27,6 +27,10 @@ def get_my_portfolio_value(request):
         total += group.get_worth()
     return total
 
+@daxaxice_register
+def get_my_points(request):
+    return request.user.points
+
 @dajaxice_register
 def place_sell_order(request, volume, price, hookup_pk):
     volume = int(volume)
