@@ -79,6 +79,17 @@ def place_buy_order(request, volume, price, hookup_pk):
         return error.to_json()
 
 @dajaxice_register
+def make_report(request, hookup_pk):
+    hookup = Hookup.objects.get(pk=hookup_pk)
+    report = Report(owner=request.user, hookup=hookup)
+    report.save()
+    #if it saved successfully, check if report count is above threshold
+    if report.pk is not None:
+        all_reports = Report.objects.filter(hookup=hookup)
+        if len(all_reports)>=Hookup.REPORT_THRESHOLD:
+        #TODO pay out
+        
+@dajaxice_register
 def get_price_inquiry(request, volume, hookup_pk):
     volume = int(volume)
     hookup = Hookup.objects.get(pk=hookup_pk)

@@ -69,6 +69,7 @@ class Hookup(models.Model):
     Hookups are associated with exactly two hookr profiles and one network
     """
     DEFAULT_DIVIDEND = 1000
+    REPORT_THRESHOLD = 3
     hookers = models.ManyToManyField(HookrProfile)
     network = models.ForeignKey(Network)
     #TODO nickname polling system
@@ -84,6 +85,21 @@ class Hookup(models.Model):
     def __unicode__(self):
         return '%s/%s(%s)' % (self.hookers.all()[0].get_full_name(), self.hookers.all()[1].get_full_name(), self.network)
 
+class Report(models.Model):
+    """
+    This is the report class.
+    Reports exist in the context of a particular network and are associated with Hookups
+    Reports are associated with the user that created them and the hookup they are a report on
+    """
+    owner=models.ForeignKey(HookrUser)
+    hookup=models.ForeignKey(Hookup)
+    def save(self, *args, **kwargs):
+        try:
+            Report.objects.get(owner=self.owner, hookup=self.hookup)
+        except Report.DoesNotExist:
+            super(Report, self).save(*args, **kwargs)
+        return
+   
 class PotentialIPO(Hookup):
     """
     This is the potential ipo class.

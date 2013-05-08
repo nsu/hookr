@@ -1,5 +1,6 @@
 from exchange.models import BuyOrder, SellOrder, HookrUser, ShareGroup, PriceDatapoint
-from datetime import datetime
+import datetime
+from django.utils.timezone import utc
 
 def match_orders(buy_order, sell_order):
     #get the hookup for the sell order
@@ -29,7 +30,8 @@ def match_orders(buy_order, sell_order):
         new_group = ShareGroup(owner=buyer, hookup=hookup, volume=volume)
         old_group.volume -= volume
         #log this sale for price data
-        datapoint = PriceDatapoint(hookup=hookup, price=price, volume=volume, time=datetime.now())
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        datapoint = PriceDatapoint(hookup=hookup, price=price, volume=volume, time=now)
         #save all of the objects we just modified (holy shit!)
         datapoint.save()
         buy_order.save()
@@ -38,3 +40,32 @@ def match_orders(buy_order, sell_order):
         new_group.save()
         buyer.save()
         seller.save()
+        
+def pay_dividends(hookup):
+    #find the market value of the hookup (mean price of last 10% of sales)
+    shares = ShareGroup.objects.filter(hookup=hookup)
+    datapoints = PriceDatapoint.objects.filter(hookup=hookup)
+    volume=0
+    for datapoint in datapoints:
+        volume += datapoint.volume
+    #we only want the most recent sales (last 10%)
+    volume /= 10
+    counted = 0
+    price = 0
+    for datapoint in datapoints:
+        if datapoint.volume+counted < volume:
+            price += datapoint.price*datapoint.volume
+            counted += datapoint.volume
+        else:
+            price += (volume-counted) * datapoint.price
+            counted = volume
+            break
+    meanprice = price/volume
+    #pay out 110% of market value as dividend and delete all shares
+    for group in shares:
+        user = group.owner
+        user.points += float(meanprice) * group.volume * 1.1
+        group.delete()
+        user.save()
+    #it's over now, delete the hookup
+    hookup.delete()
