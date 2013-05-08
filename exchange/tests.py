@@ -101,6 +101,13 @@ class DividendTest(TestCase):
         report.save()
         self.assertIsNotNone(report.pk)
         
+    def test_report_validation(self):
+        report = Report(hookup=self.hookup, owner=self.user)
+        report.save()
+        report2 = Report(hookup=self.hookup, owner=self.user)
+        report2.save()
+        self.assertIsNone(report2.pk)
+        
     def test_payout(self):
         prevpoints = self.user.points
         helpers.pay_dividends(self.hookup)
