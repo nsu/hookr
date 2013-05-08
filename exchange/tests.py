@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from exchange.models import *
 from django.core.exceptions import ValidationError
+from exchange import helpers
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -47,7 +48,7 @@ class SalesTest(TestCase):
         self.assertTrue(order.pk is not None) #make sure it saved
     
     def test_buy_order_validation(self):
-        #User has 1805 points, cost is 1806
+        # has 1805 points, cost is 1806
         order = BuyOrder(hookup = self.hookup, volume = 1, price = 1806, owner = self.user)
         try:
             order.save()
@@ -63,4 +64,11 @@ class SalesTest(TestCase):
         except ValidationError:
             pass
         self.assertTrue(order.pk is None) #make sure didn't save
-    #TODO def test_order_matching(self):
+    def test_order_matching(self):
+        sell_order = SellOrder(hookup = self.hookup, volume = 10, price = 100, owner = self.user)
+        buy_order = BuyOrder(hookup = self.hookup, volume = 1, price = 100, owner = self.user)
+        sell_order.save()
+        buy_order.save()
+        helpers.match_orders(buy_order, sell_order)
+        self.assertEqual(sell_order.volume, 9)
+        
