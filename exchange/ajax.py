@@ -3,7 +3,7 @@ from dajaxice.decorators import dajaxice_register
 from django.http import HttpResponse
 from django.core import serializers
 from exchange.models import *
-from exchange.helpers import match_orders
+from exchange.helpers import match_orders, pay_dividends
 from django.db.models import Q
 from exchange.serializers import *
 
@@ -86,8 +86,9 @@ def make_report(request, hookup_pk):
     #if it saved successfully, check if report count is above threshold
     if report.pk is not None:
         all_reports = Report.objects.filter(hookup=hookup)
+        #if it is, use the helper function to pay out dividends
         if len(all_reports)>=Hookup.REPORT_THRESHOLD:
-        #TODO pay out
+            pay_dividends(hookup)
         
 @dajaxice_register
 def get_price_inquiry(request, volume, hookup_pk):
