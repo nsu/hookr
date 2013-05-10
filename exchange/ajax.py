@@ -27,7 +27,7 @@ def get_my_portfolio_value(request):
         total += group.get_worth()
     return total
 
-@daxaxice_register
+@dajaxice_register
 def get_my_points(request):
     return request.user.points
 
