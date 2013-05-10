@@ -1,0 +1,32 @@
+NOTIFICATION AND REQUEST TYPES
+
+User:
+-User's information has changed
+-Welcome to Hookr
+
+
+Network:
+-User has been invited to join a closed network
+    -Need ability to accept/reject
+
+Profile:
+-A profile has been associated with you
+    -Accept/Reject profile?
+-An IPO involving your profile has succeeded
+    -Link to the new hookup
+-A report has been filed about you
+    -Confirm/Refute?
+-A hookup involving you has paid dividends
+    -Need information about the hookup because it will have been deleted
+
+Investments:
+-An IPO you invested in has happened
+    -Link to your share group
+-One of your (buy|sell) orders has been matched
+    -Link to your share group (if it exists)
+    -Tell user how many points spent/earned
+-One of your investments has paid dividends
+    -Summarize information:
+        -Profiles involved
+        -Points gained
+        -Shares converted
