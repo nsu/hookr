@@ -303,3 +303,17 @@ class PriceDatapoint(models.Model):
         price /= volume
         new_datapoint = PriceDatapoint(price=price, volume=volume, hookup=hookup)
         new_datapoint.save()
+        
+class BaseNotification(models.Model):
+    """
+    This is the base class for notifications.
+    It is not an abstract class so that it is searchable.
+    It contains fields and methods that all notifications
+    will have.
+    """
+    owner = models.ForeignKey(HookrUser)
+    is_read = models.BooleanField(False)
+    #TODO message body
+    #TODO links
+    #TODO type-specific information
+    
